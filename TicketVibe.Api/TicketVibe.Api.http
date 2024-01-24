@@ -1,0 +1,6 @@
+@TicketVibe.Api_HostAddress = http://localhost:5231
+
+GET {{TicketVibe.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
