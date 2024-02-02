@@ -30,7 +30,34 @@ namespace TicketVibe.Api.Controllers
             }
             return Ok(genre);
         }
-
+        [HttpPost] 
+        public ActionResult<Genre> AddGenre(Genre genre)
+        {
+            genreRepository.AddGenre(genre);
+            return Ok(genre);
+        }
+        [HttpPut("{id:int}")]
+        public ActionResult<Genre> UpdateGenre(int id, Genre genre)
+        {
+            var existingGenre = genreRepository.GetGenreById(id);
+            if (existingGenre is null)
+            {
+                return NotFound();
+            }
+            genreRepository.UpdateGenre(id, genre);
+            return Ok(genre);
+        }
+        [HttpDelete("{id:int}")]
+        public ActionResult DeleteGenre(int id)
+        {
+            var existingGenre = genreRepository.GetGenreById(id);
+            if (existingGenre is null)
+            {
+                return NotFound();
+            }
+            genreRepository.DeleteGenre(id);
+            return Ok();
+        }
 
     }
 }
