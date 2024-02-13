@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicketVibe.Entities\TicketVibe.Entities.csproj" />
+    <ProjectReference Include="..\TicketVibe.Persistence\TicketVibe.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

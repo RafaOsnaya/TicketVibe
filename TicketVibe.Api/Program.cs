@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 
 //Registering  services
-builder.Services.AddSingleton<GenreRepository>();
+builder.Services.AddTransient<IGenreRepository, GenreRepository>();
 
 var app = builder.Build();
 
@@ -37,7 +37,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapGet("api/holaMundo", () => "Hello World!");
+/*app.MapGet("api/holaMundo", () => "Hello World!");
 app.MapGet("api/genres-minimal", (GenreRepository genreRepository) =>
 {
     return genreRepository.GetAllGenres();
@@ -48,7 +48,7 @@ app.MapPost("api/genres-minimal", (Genre genre, GenreRepository genreRepository)
     genreRepository.AddGenre(genre);
     return Results.Ok(genre);
 });
-
+*/
 app.MapControllers();
 
 app.Run();

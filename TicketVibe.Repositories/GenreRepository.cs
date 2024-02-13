@@ -1,44 +1,46 @@
-﻿using TicketVibe.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TicketVibe.Entities;
+using TicketVibe.Persistence;
 namespace TicketVibe.Repositories
 
 {
-    public class GenreRepository
+    public class GenreRepository : IGenreRepository
     {
-        private readonly List<Genre> genreList = new List<Genre>();
+        private readonly ApplicationDBContext context;
 
-        public GenreRepository()
+        public GenreRepository(ApplicationDBContext context)
         {
-            genreList.Add(new Genre { Id = 1, Name = "Hip Hop"});
-            genreList.Add(new Genre { Id = 2, Name = "R&B"});
-            genreList.Add(new Genre { Id = 3, Name = "Salsa" });
-            genreList.Add(new Genre { Id = 4, Name = "Cumbia"});
-            genreList.Add(new Genre { Id = 5, Name = "Rock" });
+            this.context = context;
+
         }
 
         //Metodos
-        public List<Genre> GetAllGenres()
+        public async Task<List<Genre>> GetAllGenresAsync()
         {
-            return genreList;
+            return await context.Genres.ToListAsync();
         }
 
-        public Genre? GetGenreById(int id)
+        public async Task<Genre?> GetGenreByIdAsync(int id)
         {
-            return genreList.FirstOrDefault(x => x.Id == id);
+            return await context.Genres.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void AddGenre(Genre genre)
+        public async Task<int> AddAsync(Genre genre)
         {
-            genre.Id = genreList.Max(x => x.Id) + 1;
-            genreList.Add(genre);
+            context.Genres.Add(genre);
+            await context.SaveChangesAsync();
+            return genre.Id;
         }
 
-        public void UpdateGenre(int id,  Genre genre)
+        public async Task UpdateGenreAsync(int id, Genre genre)
         {
-            var item = GetGenreById(id);
-            if(item is not null)
+            var item = await GetGenreByIdAsync(id);
+            if (item is not null)
             {
                 item.Name = genre.Name;
                 item.Status = genre.Status;
+                context.Update(item);
+                await context.SaveChangesAsync();
             }
             else
             {
@@ -46,18 +48,17 @@ namespace TicketVibe.Repositories
             }
         }
 
-        public void DeleteGenre(int id)
+        public async Task DeleteGenreAsync(int id)
         {
-            var item = GetGenreById(id);
+            var item = await GetGenreByIdAsync(id);
             if (item is not null)
             {
-                genreList.Remove(item);
+                context.Remove(item);
             }
             else
             {
                 throw new Exception("Genre not found");
             }
         }
-
     }
 }

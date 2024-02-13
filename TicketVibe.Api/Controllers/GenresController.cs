@@ -8,55 +8,51 @@ namespace TicketVibe.Api.Controllers
     [Route("api/genres")]
     public class GenresController : ControllerBase
     {
-        private readonly GenreRepository genreRepository;
+        private readonly IGenreRepository genreRepository;
 
-        public GenresController(GenreRepository genreRepository)
+        public GenresController(IGenreRepository genreRepository)
         {
             this.genreRepository = genreRepository;
         }
 
         [HttpGet]
-        public ActionResult<List<Genre>> GetAllGenres()
+        public async Task<IActionResult> GetAllGenres()
         {
-            return Ok(genreRepository.GetAllGenres());
+            var data = await genreRepository.GetAllGenresAsync();
+            return Ok(data);
         }
+
         [HttpGet("{id:int}")]
-        public ActionResult<Genre?> GetGenreById(int id)
+        public async Task<IActionResult> GetGenreById(int id)
         {
-            var genre = genreRepository.GetGenreById(id);
-            if (genre is null)
+            var item = await genreRepository.GetGenreByIdAsync(id);
+            if (item is null)
             {
                 return NotFound();
             }
-            return Ok(genre);
+            return Ok(item);
         }
         [HttpPost] 
-        public ActionResult<Genre> AddGenre(Genre genre)
+        public async Task<IActionResult> AddGenre(Genre genre)
         {
-            genreRepository.AddGenre(genre);
+            await genreRepository.AddAsync(genre);
             return Ok(genre);
         }
+
+
         [HttpPut("{id:int}")]
-        public ActionResult<Genre> UpdateGenre(int id, Genre genre)
+        public async Task<IActionResult> UpdateGenre(int id, Genre genre)
         {
-            var existingGenre = genreRepository.GetGenreById(id);
-            if (existingGenre is null)
-            {
-                return NotFound();
-            }
-            genreRepository.UpdateGenre(id, genre);
-            return Ok(genre);
+            await genreRepository.UpdateGenreAsync(id, genre);
+            return NoContent();
         }
+
+
         [HttpDelete("{id:int}")]
-        public ActionResult DeleteGenre(int id)
+        public async Task<IActionResult> DeleteGenre(int id)
         {
-            var existingGenre = genreRepository.GetGenreById(id);
-            if (existingGenre is null)
-            {
-                return NotFound();
-            }
-            genreRepository.DeleteGenre(id);
-            return Ok();
+            await genreRepository.DeleteGenreAsync(id);
+            return NoContent();
         }
 
     }
