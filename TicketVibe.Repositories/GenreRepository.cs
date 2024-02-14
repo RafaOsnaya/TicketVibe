@@ -6,8 +6,11 @@ namespace TicketVibe.Repositories
 {
     public class GenreRepository : IGenreRepository
     {
+        //Dependency Injection
         private readonly ApplicationDBContext context;
 
+
+        //Constructor
         public GenreRepository(ApplicationDBContext context)
         {
             this.context = context;
@@ -17,12 +20,17 @@ namespace TicketVibe.Repositories
         //Metodos
         public async Task<List<Genre>> GetAllGenresAsync()
         {
-            return await context.Genres.ToListAsync();
+            return await context.Genres
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Genre?> GetGenreByIdAsync(int id)
         {
-            return await context.Genres.FirstOrDefaultAsync(x => x.Id == id);
+            
+            return await context.Genres
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<int> AddAsync(Genre genre)
@@ -44,7 +52,7 @@ namespace TicketVibe.Repositories
             }
             else
             {
-                throw new Exception("Genre not found");
+                throw new InvalidOperationException("Genre not found");
             }
         }
 
@@ -53,7 +61,7 @@ namespace TicketVibe.Repositories
             var item = await GetGenreByIdAsync(id);
             if (item is not null)
             {
-                context.Remove(item);
+                context.Genres.Remove(item);
             }
             else
             {
