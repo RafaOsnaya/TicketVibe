@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TicketVibe.Dto.Request;
+using TicketVibe.Dto.Response;
 using TicketVibe.Entities;
 using TicketVibe.Persistence;
 namespace TicketVibe.Repositories
@@ -18,44 +20,74 @@ namespace TicketVibe.Repositories
         }
 
         //Metodos
-        public async Task<List<Genre>> GetAllGenresAsync()
+        public async Task<List<GenreResponseDto>> GetAllGenresAsync()
         {
-            return await context.Genres
+            var items = await context.Genres
                 .AsNoTracking()
                 .ToListAsync();
+
+            //Mapping
+            var genresResponseDto = items.Select(x => new GenreResponseDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Status = x.Status
+            }).ToList();
+
+            return genresResponseDto;
         }
 
-        public async Task<Genre?> GetGenreByIdAsync(int id)
+        public async Task<GenreResponseDto?> GetGenreByIdAsync(int id)
         {
             
             var item = await context.Genres
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
+            var genreResponseDto = new GenreResponseDto();
+
             if (item is not null)
             {
-                return item;
+                //Mapping    
+                genreResponseDto.Id = item.Id;
+                genreResponseDto.Name = item.Name;
+                genreResponseDto.Status = item.Status;
+                
             }
             else
             {
                 throw new InvalidOperationException($"Genre not found id {id}");
+               
             }
+            return genreResponseDto;
         }
 
-        public async Task<int> AddAsync(Genre genre)
+        public async Task<int> AddAsync(GenreRequestDto genreRequestDto)
         {
+            //MApping
+            var genre = new Genre
+            {
+                Name = genreRequestDto.Name,
+                Status = genreRequestDto.Status
+            };
+
             context.Genres.Add(genre);
             await context.SaveChangesAsync();
             return genre.Id;
         }
 
-        public async Task UpdateGenreAsync(int id, Genre genre)
+        public async Task UpdateGenreAsync(int id, GenreRequestDto genreRequestDto)
         {
-            var item = await GetGenreByIdAsync(id);
+            var item = await context.Genres
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (item is not null)
             {
-                item.Name = genre.Name;
-                item.Status = genre.Status;
+                //Mapping
+
+                item.Name = genreRequestDto.Name;
+                item.Status = genreRequestDto.Status;
                 context.Update(item);
                 await context.SaveChangesAsync();
             }
@@ -67,7 +99,10 @@ namespace TicketVibe.Repositories
 
         public async Task DeleteGenreAsync(int id)
         {
-            var item = await GetGenreByIdAsync(id);
+            var item = await context.Genres
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (item is not null)
             {
                 context.Genres.Remove(item);

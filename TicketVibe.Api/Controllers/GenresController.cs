@@ -4,6 +4,8 @@ using TicketVibe.Entities;
 using TicketVibe.Repositories;
 using TicketVibe.Dto;
 using System.Net;
+using TicketVibe.Dto.Response;
+using TicketVibe.Dto.Request;
 
 namespace TicketVibe.Api.Controllers
 {
@@ -23,7 +25,7 @@ namespace TicketVibe.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllGenres()
         {
-            var response = new BaseResponseGeneric<ICollection<Genre>>();
+            var response = new BaseResponseGeneric<ICollection<GenreResponseDto>>();
             try
             {
                 response.Data = await genreRepository.GetAllGenresAsync();
@@ -42,7 +44,7 @@ namespace TicketVibe.Api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetGenreById(int id)
         {
-            var response = new BaseResponseGeneric<Genre>();
+            var response = new BaseResponseGeneric<GenreResponseDto>();
             try
             {
                 response.Data = await genreRepository.GetGenreByIdAsync(id);
@@ -64,16 +66,16 @@ namespace TicketVibe.Api.Controllers
             }
         }
         [HttpPost] 
-        public async Task<IActionResult> AddGenre(Genre genre)
+        public async Task<IActionResult> AddGenre(GenreRequestDto genreRequestDto)
         {
             var response = new BaseResponseGeneric<int>();
 
             try
             {
-                await genreRepository.AddAsync(genre);
-                response.Data = genre.Id;
+                var genreId = await genreRepository.AddAsync(genreRequestDto);
+                response.Data = genreId;
                 response.Success = true;
-                logger.LogInformation($"Agregando el genero {genre.Id}.");
+                logger.LogInformation($"Agregando el genero {genreId}.");
                 return StatusCode((int)HttpStatusCode.Created, response); // 201 (Created
                 //return CreatedAtAction(nameof(GetGenreById), new { id = genre.Id }, genre);
             }
@@ -87,18 +89,12 @@ namespace TicketVibe.Api.Controllers
 
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateGenre(int id, Genre genre)
+        public async Task<IActionResult> UpdateGenre(int id, GenreRequestDto genreRequestDto)
         {
             var response = new BaseResponse();
             try
             {
-                var item = await genreRepository.GetGenreByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogInformation($"No se encontro el genero musical {id}.");
-                    return NotFound(response);
-                }
-                await genreRepository.UpdateGenreAsync(id, genre);
+                await genreRepository.UpdateGenreAsync(id, genreRequestDto);
                 response.Success = true;
                 logger.LogInformation($"Actualizando el genero {id}.");
                 return Ok(response);
@@ -118,12 +114,6 @@ namespace TicketVibe.Api.Controllers
             var response = new BaseResponse();
             try
             {
-                var item = await genreRepository.GetGenreByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogInformation($"No se encontro el genero musical {id}.");
-                    return NotFound(response);
-                }
                 await genreRepository.DeleteGenreAsync(id);
                 response.Success = true;
                 logger.LogInformation($"Borrando el genero {id}.");
