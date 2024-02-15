@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketVibe.Entities", "Tick
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketVibe.Repositories", "TicketVibe.Repositories\TicketVibe.Repositories.csproj", "{6BE1DCE2-7C2D-4DC5-AC18-512BD1EFE46F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketVibe.Persistence", "TicketVibe.Persistence\TicketVibe.Persistence.csproj", "{B0E9E1CE-19D4-4415-A7E9-522258F4E35D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketVibe.Persistence", "TicketVibe.Persistence\TicketVibe.Persistence.csproj", "{B0E9E1CE-19D4-4415-A7E9-522258F4E35D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketVibe.Dto", "TicketVibe.Dto\TicketVibe.Dto.csproj", "{02246965-60BD-4CD4-BD77-9722D7752BDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B0E9E1CE-19D4-4415-A7E9-522258F4E35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0E9E1CE-19D4-4415-A7E9-522258F4E35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0E9E1CE-19D4-4415-A7E9-522258F4E35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02246965-60BD-4CD4-BD77-9722D7752BDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02246965-60BD-4CD4-BD77-9722D7752BDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02246965-60BD-4CD4-BD77-9722D7752BDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02246965-60BD-4CD4-BD77-9722D7752BDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

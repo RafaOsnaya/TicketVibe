@@ -28,9 +28,18 @@ namespace TicketVibe.Repositories
         public async Task<Genre?> GetGenreByIdAsync(int id)
         {
             
-            return await context.Genres
+            var item = await context.Genres
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (item is not null)
+            {
+                return item;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Genre not found id {id}");
+            }
         }
 
         public async Task<int> AddAsync(Genre genre)
@@ -52,7 +61,7 @@ namespace TicketVibe.Repositories
             }
             else
             {
-                throw new InvalidOperationException("Genre not found");
+                throw new InvalidOperationException($"Genre not found id {id}");
             }
         }
 
@@ -62,10 +71,11 @@ namespace TicketVibe.Repositories
             if (item is not null)
             {
                 context.Genres.Remove(item);
+                await context.SaveChangesAsync();
             }
             else
             {
-                throw new Exception("Genre not found");
+                throw new Exception($"Genre not found id {id}");
             }
         }
     }
