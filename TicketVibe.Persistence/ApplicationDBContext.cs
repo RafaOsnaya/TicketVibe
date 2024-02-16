@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using TicketVibe.Entities;
 
 namespace TicketVibe.Persistence
@@ -13,14 +14,13 @@ namespace TicketVibe.Persistence
         //Fluent API
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Genre>().Property(g => g.Name).IsRequired().HasMaxLength(50);        
+            //Apply All Configurations (Fluent API) (Reflection Librar
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly()); 
+                 
 
         }
-
-        //Entities To Tables
-        public DbSet<Genre> Genres { get; set; }
 
 
     }

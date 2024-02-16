@@ -22,7 +22,7 @@ namespace TicketVibe.Repositories
         //Metodos
         public async Task<List<GenreResponseDto>> GetAllGenresAsync()
         {
-            var items = await context.Genres
+            var items = await context.Set<Genre>()
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -40,7 +40,7 @@ namespace TicketVibe.Repositories
         public async Task<GenreResponseDto?> GetGenreByIdAsync(int id)
         {
             
-            var item = await context.Genres
+            var item = await context.Set<Genre>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -71,14 +71,14 @@ namespace TicketVibe.Repositories
                 Status = genreRequestDto.Status
             };
 
-            context.Genres.Add(genre);
+            context.Set<Genre>().Add(genre);
             await context.SaveChangesAsync();
             return genre.Id;
         }
 
         public async Task UpdateGenreAsync(int id, GenreRequestDto genreRequestDto)
         {
-            var item = await context.Genres
+            var item = await context.Set<Genre>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -99,13 +99,13 @@ namespace TicketVibe.Repositories
 
         public async Task DeleteGenreAsync(int id)
         {
-            var item = await context.Genres
+            var item = await context.Set<Genre>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (item is not null)
             {
-                context.Genres.Remove(item);
+                context.Set<Genre>().Remove(item);
                 await context.SaveChangesAsync();
             }
             else
