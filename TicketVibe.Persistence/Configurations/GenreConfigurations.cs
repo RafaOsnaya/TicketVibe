@@ -9,6 +9,9 @@ namespace TicketVibe.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Genre> builder)
         {
             builder.Property(g => g.Name).IsRequired().HasMaxLength(50);
+
+            builder.ToTable("Genres", schema: "Musicales");
+
         }
     }
 }

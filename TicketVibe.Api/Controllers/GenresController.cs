@@ -28,7 +28,17 @@ namespace TicketVibe.Api.Controllers
             var response = new BaseResponseGeneric<ICollection<GenreResponseDto>>();
             try
             {
-                response.Data = await genreRepository.GetAllGenresAsync();
+                //Mapping
+                var genreDb = await genreRepository.GetAllAsync();
+                var genresResposeDto = genreDb.Select(x => new GenreResponseDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Status = x.Status
+                }).ToList();
+
+
+                response.Data = genresResposeDto;
                 response.Success = true;
                 logger.LogInformation("Se Obtenieron  toda la informacion de los generos musicales");
                 return Ok(response);
@@ -47,13 +57,23 @@ namespace TicketVibe.Api.Controllers
             var response = new BaseResponseGeneric<GenreResponseDto>();
             try
             {
-                response.Data = await genreRepository.GetGenreByIdAsync(id);
-                response.Success = true;
 
-                if (response.Data is null)
+                var genresDb = await genreRepository.GetByIdAsync(id);
+                if (genresDb is null)
                 {
                     logger.LogWarning($"No se encontro el genero musical {id}.");
                     return NotFound(response);
+                }
+                else
+                {
+                    var genreResposeDto = new GenreResponseDto()
+                    {
+                        Id = genresDb.Id,
+                        Name = genresDb.Name,
+                        Status = genresDb.Status
+                    };
+                    response.Data = genreResposeDto;
+                    response.Success= true;
                 }
                 return Ok(response);
             }
@@ -65,6 +85,10 @@ namespace TicketVibe.Api.Controllers
                 return BadRequest(response);
             }
         }
+
+
+
+
         [HttpPost] 
         public async Task<IActionResult> AddGenre(GenreRequestDto genreRequestDto)
         {
@@ -72,7 +96,14 @@ namespace TicketVibe.Api.Controllers
 
             try
             {
-                var genreId = await genreRepository.AddAsync(genreRequestDto);
+                var genresDb = new Genre()
+                {
+                    Name = genreRequestDto.Name,
+                    Status = genreRequestDto.Status
+                };
+
+
+                var genreId = await genreRepository.AddAsync(genresDb);
                 response.Data = genreId;
                 response.Success = true;
                 logger.LogInformation($"Agregando el genero {genreId}.");
@@ -94,7 +125,17 @@ namespace TicketVibe.Api.Controllers
             var response = new BaseResponse();
             try
             {
-                await genreRepository.UpdateGenreAsync(id, genreRequestDto);
+                var genresDb = await genreRepository.GetByIdAsync(id);
+
+                if (genresDb is null) {
+
+                    response.ErrorMessage = "No se encontro el registro.";
+                    return NotFound(response);
+                }
+                genresDb.Name = genreRequestDto.Name;
+                genresDb.Status = genreRequestDto.Status;
+
+                await genreRepository.UpdateAsync();
                 response.Success = true;
                 logger.LogInformation($"Actualizando el genero {id}.");
                 return Ok(response);
@@ -114,7 +155,17 @@ namespace TicketVibe.Api.Controllers
             var response = new BaseResponse();
             try
             {
-                await genreRepository.DeleteGenreAsync(id);
+                var genresDb = await genreRepository.GetByIdAsync(id);
+
+                if (genresDb is null)
+                {
+
+                    response.ErrorMessage = "No se encontro el registro.";
+                    return NotFound(response);
+                }
+
+
+                await genreRepository.DeleteAsync(id);
                 response.Success = true;
                 logger.LogInformation($"Borrando el genero {id}.");
                 return Ok(response);

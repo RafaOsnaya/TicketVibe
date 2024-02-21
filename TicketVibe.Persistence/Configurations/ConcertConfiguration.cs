@@ -21,8 +21,8 @@ namespace TicketVibe.Persistence.Configurations
                 .IsUnicode(false);
             
 
-            builder.Property(c => c.TicketQuantity).IsRequired();
-            builder.Property(c => c.Finalized).IsRequired();
+            builder.HasIndex(c => c.Title).IsUnique();
+            builder.ToTable("Concert", schema: "Musicales");
             
 
         }

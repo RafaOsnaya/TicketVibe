@@ -4,12 +4,8 @@ using TicketVibe.Entities;
 
 namespace TicketVibe.Repositories
 {
-    public interface IGenreRepository
+    public interface IGenreRepository : IRepositoryBase<Genre>
     {
-        Task<int> AddAsync(GenreRequestDto genre);
-        Task DeleteGenreAsync(int id);
-        Task<List<GenreResponseDto>> GetAllGenresAsync();
-        Task<GenreResponseDto?> GetGenreByIdAsync(int id);
-        Task UpdateGenreAsync(int id, GenreRequestDto genre);
+
     }
 }
